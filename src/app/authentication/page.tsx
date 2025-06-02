@@ -27,6 +27,10 @@ const AuthenticationPage = async () => {
         <TabsContent value="register">
           <SignUpForm />
         </TabsContent>
+        <p className="text-center text-xs text-slate-500">
+          &copy; {new Date().getFullYear()} Marcio Paranhos/Dr. Agenda. Todos os
+          direitos reservados.
+        </p>
       </Tabs>
     </div>
   );

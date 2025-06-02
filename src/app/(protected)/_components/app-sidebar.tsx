@@ -121,7 +121,7 @@ export function AppSidebar() {
                     <p className="text-sm">
                       {session.data?.user?.clinic?.name}
                     </p>
-                    <p className="text-muted-foreground text-sm">
+                    <p className="text-muted-foreground text-xs">
                       {session.data?.user.email}
                     </p>
                   </div>

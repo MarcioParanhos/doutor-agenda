@@ -1,4 +1,6 @@
 import { PlusIcon } from "lucide-react";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -10,8 +12,18 @@ import {
   PageHeaderContent,
   PageTitle,
 } from "@/components/ui/page-container";
+import { auth } from "@/lib/auth";
 
-export default function DoctorsPage() {
+const DoctorsPage = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) {
+    redirect("/authentication");
+  }
+  if (!session.user.clinic) {
+    redirect("/clinic-form");
+  }
   return (
     <PageContainer>
       <PageHeader>
@@ -31,4 +43,6 @@ export default function DoctorsPage() {
       </PageContent>
     </PageContainer>
   );
-}
+};
+
+export default DoctorsPage;

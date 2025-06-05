@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { RefreshCw, Save } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
@@ -378,11 +379,13 @@ const UpsertDoctorForm = ({ doctor, onSuccess }: UpsertDoctorFormProps) => {
           />
           <DialogFooter>
             <Button type="submit" disabled={upsertDoctorAction.isPending}>
-              {upsertDoctorAction.isPending
-                ? "Salvando..."
-                : doctor
-                  ? "Salvar"
-                  : "Adicionar"}
+              {upsertDoctorAction.isPending ? (
+                "Salvando..."
+              ) : doctor ? (
+                <RefreshCw />
+              ) : (
+                <Save />
+              )}
             </Button>
           </DialogFooter>
         </form>

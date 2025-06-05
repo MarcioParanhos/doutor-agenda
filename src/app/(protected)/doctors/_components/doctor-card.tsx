@@ -1,8 +1,28 @@
 "use client";
 
-import { CalendarIcon, ClockIcon, HandCoins } from "lucide-react";
+import {
+  CalendarIcon,
+  ClockIcon,
+  HandCoins,
+  Trash,
+  UserRoundSearch,
+} from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
+import { toast } from "sonner";
 
+import { deleteDoctor } from "@/actions/delet-doctor";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -30,6 +50,20 @@ const DoctorCard = ({ doctor }: DoctorCardProps) => {
     .split(" ")
     .map((name) => name[0])
     .join("");
+
+  const deleteDoctorAction = useAction(deleteDoctor, {
+    onSuccess: () => {
+      toast.success("Médico deletado com sucesso");
+    },
+    onError: () => {
+      toast.error("Erro ao deletar médico");
+    },
+  });
+
+  const handleDeleteDoctor = () => {
+    if (!doctor) return;
+    deleteDoctorAction.execute({ id: doctor?.id });
+  };
 
   const availability = getAvailability(doctor);
   return (
@@ -62,13 +96,16 @@ const DoctorCard = ({ doctor }: DoctorCardProps) => {
         </Badge>
       </CardContent>
       <Separator />
-      <CardFooter>
+      <CardFooter className="flex flex-col gap-2">
         <Dialog
           open={isUpsertDoctorFormOpen}
           onOpenChange={setIsUpsertDoctorFormOpen}
         >
           <DialogTrigger asChild>
-            <Button className="w-full">Ver Detalhes</Button>
+            <Button className="w-full">
+              <UserRoundSearch />
+              Ver detalhes
+            </Button>
           </DialogTrigger>
           <UpsertDoctorForm
             doctor={{
@@ -79,6 +116,33 @@ const DoctorCard = ({ doctor }: DoctorCardProps) => {
             onSuccess={() => setIsUpsertDoctorFormOpen(false)}
           />
         </Dialog>
+        {doctor && (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" className="w-full">
+                <Trash />
+                Deletar Médico
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  Tem certeza que deseja deletar o médico?
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  Essa ação não pode ser desfeita. Isso irá deletar o médico e
+                  remover seus dados do sistema.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteDoctor}>
+                  Deletar
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
       </CardFooter>
     </Card>
   );

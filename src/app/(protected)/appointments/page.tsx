@@ -42,20 +42,21 @@ const AppointmentsPage = async () => {
       where: eq(appointmentsTable.clinicId, session.user.clinic.id),
       orderBy: desc(appointmentsTable.date),
       with: {
-        doctor: {
-          columns: { name: true },
-        },
-        patient: {
-          columns: { name: true },
-        },
+        doctor: true,
+        patient: true,
       },
     }),
   ]);
 
   const appointments = appointmentsRaw.map((a) => ({
+    id: a.id,
     patientName: a.patient?.name ?? "-",
     doctorName: a.doctor?.name ?? "-",
+    specialty: a.doctor?.specialty ?? "-",
     formattedDate: dayjs(a.date).format("DD/MM/YYYY [às] HH:mm"),
+    formattedPrice: a.doctor?.appointmentPriceInCents
+      ? `R$ ${(a.doctor.appointmentPriceInCents / 100).toFixed(2)}`
+      : "-",
   }));
 
   return (
